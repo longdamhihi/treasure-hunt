@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import React, { useState } from "react";
+import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import {
   Typography,
   Paper,
@@ -9,33 +8,23 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
+import { TreasureMap } from "./TreasurePage";
 
-interface TreasureMap {
-  id: number;
-  n: number;
-  m: number;
-  p: number;
-  minimalFuel: number;
-  matrixJson: string;
+interface TreasureHistoryProps {
+  rows: TreasureMap[];
+  loading: boolean;
+  error: string | null;
 }
 
-const TreasureHistory = () => {
-  const [rows, setRows] = useState<TreasureMap[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    axios
-      .get<TreasureMap[]>("http://localhost:5005/api/TreasureMap")
-      .then((res) => {
-        setRows(res.data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to fetch treasure history. Check your server.");
-        setLoading(false);
-      });
-  }, []);
+const TreasureHistory: React.FC<TreasureHistoryProps> = ({
+  rows,
+  loading,
+  error,
+}) => {
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 5,
+  });
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 70 },
@@ -121,7 +110,8 @@ const TreasureHistory = () => {
               rows={rows}
               columns={columns}
               pagination
-              paginationModel={{ page: 0, pageSize: 5 }}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
               pageSizeOptions={[5, 10, 20]}
               disableRowSelectionOnClick
             />

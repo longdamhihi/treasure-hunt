@@ -1,12 +1,10 @@
 import React from "react";
-import TreasureForm from "./components/TreasureForm";
-import TreasureHistory from "./components/TreasureHistory";
+import TreasurePage from "./components/TreasurePage";
 
 function App() {
   return (
     <div>
-      <TreasureForm />
-      <TreasureHistory />
+      <TreasurePage />
     </div>
   );
 }
